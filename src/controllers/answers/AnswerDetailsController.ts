@@ -1,41 +1,50 @@
 import { FastifyRequest, FastifyReply } from "fastify"
-import { ListAnswersService } from "../../services/answers/ListAnswersService"
 import { AnswerDetailsService } from "../../services/answers/AnswerDetailsService"
 import { SelectAnswerService } from "../../services/answers/SelectAnswerService"
 
 class AnswerDetailsController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const career: { [key: string]: number } = {}
+    try {
+      const { execute: detailsServiceExecute } = new AnswerDetailsService()
 
-    // const listAnswersService = new ListAnswersService()
-    // const answers = await listAnswersService.execute()
+      // calling the calculateTraitAndValue method to obtain the area of ​​interest
+      const { trait, value } = await this.calculateTraitAndValue()
 
-    const selectAnswerService = new SelectAnswerService()
-    const selectAnswer = await selectAnswerService.execute()
+      // calling the AnswerDetailsService to get the details based on the area of ​​interest
+      const details = await detailsServiceExecute({ trait })
 
-    selectAnswer.forEach((answer) => {
-      if (!career[`${answer.question.trait}`]) {
-        career[`${answer.question.trait}`] = answer.value
-      } else {
-        career[`${answer.question.trait}`] += answer.value
-      }
-    })
+      return reply.send(details)
+    } catch (error) {
+      return reply.status(500).send("Internal Server Erro")
+    }
+  }
+
+  // method for calculating the highest scoring area of ​​interest
+  async calculateTraitAndValue() {
+    const { execute: selectAnswerServiceExecute } = new SelectAnswerService()
+
+    // calling SelectAnswerService to get user responses
+    const answers = await selectAnswerServiceExecute()
+
+    // calculates the score for each area of ​​interest
+    const career = answers.reduce((acc, answer) => {
+      acc[answer.question.trait] =
+        (acc[answer.question.trait] || 0) + answer.value
+      return acc
+    }, {} as { [key: string]: number })
 
     let trait: string | undefined
     let mostValue: number | undefined
 
+    // finds the area of ​​interest with the highest score
     for (const key in career) {
-      const value = career[key]
-      if (mostValue === undefined || mostValue <= value) {
-        mostValue = value
+      if (mostValue === undefined || career[key] > mostValue) {
         trait = key
+        mostValue = career[key]
       }
     }
 
-    const detailsService = new AnswerDetailsService()
-    const details = await detailsService.execute({ trait })
-
-    return reply.send(details)
+    return { trait, value: mostValue }
   }
 }
 
