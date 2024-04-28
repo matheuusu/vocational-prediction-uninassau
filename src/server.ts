@@ -17,10 +17,15 @@ const start = async () => {
   app.register(routes)
 
   try {
-    app.listen({ port: 3333 }).then(() => {
-      console.log("server is running")
-    })
-  } catch (err) {
+    app
+      .listen({
+        host: "0.0.0.0",
+        port: process.env.PORT ? Number(process.env.PORT) : 3333,
+      })
+      .then(() => {
+        console.log("server is running")
+      })
+  } catch (error) {
     process.exit(1)
   }
 }

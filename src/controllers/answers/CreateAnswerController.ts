@@ -2,33 +2,39 @@ import { FastifyRequest, FastifyReply } from "fastify"
 import { CreateAnswerService } from "../../services/answers/CreateAnswerService"
 import { z } from "zod"
 
+// define the response validation scheme
+const createAnswerSchema = z.object({
+  user: z.string(),
+  value: z.number(),
+  questionId: z.string(),
+})
+
+// define the expected number of responses
+const answersExpected = 12
+
 class CreateAnswerController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const createAnswerSchema = z.object({
-      user: z.string(),
-      value: z.number(),
-      questionId: z.string(),
-    })
-
     const { answerArray } = request.body as { answerArray: any[] }
 
-    if (answerArray.length !== 10) {
-      return reply.status(400).send({ message: "há um problema nas questões" })
+    if (answerArray.length !== answersExpected) {
+      reply.status(400).send({ message: "há um problema nas questões" })
     }
 
-    const answerService = new CreateAnswerService()
+    const { execute: answerServiceExecute } = new CreateAnswerService()
 
-    answerArray.forEach(async (answers) => {
-      const { value, user, questionId } = createAnswerSchema.parse(answers)
+    for (const answer of answerArray) {
+      try {
+        // validates each response using schema
+        const { value, user, questionId } = createAnswerSchema.parse(answer)
 
-      const answer = await answerService.execute({
-        user,
-        value,
-        questionId,
-      })
-    })
+        // calling the service to create the answers
+        await answerServiceExecute({ user, value, questionId })
+      } catch (error) {
+        reply.status(400).send({ message: "Error processing responses" })
+      }
+    }
 
-    return reply.status(201).send({ message: "responses were submitted" })
+    return reply.status(201).send({ message: "Replies have been sent" })
   }
 }
 
