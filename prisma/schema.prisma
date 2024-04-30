@@ -14,10 +14,12 @@ datasource db {
 }
 
 model Question {
-  id     String   @id @default(auto()) @map("_id") @db.ObjectId
-  text   String
-  trait  String
-  Answer Answer[]
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  text     String
+  trait    String
+  course   Course?  @relation(fields: [courseId], references: [id])
+  Answer   Answer[]
+  courseId String?  @db.ObjectId
 
   @@map("questions")
 }
@@ -33,9 +35,10 @@ model Answer {
 }
 
 model Course {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  text  String
-  trait String
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  text     String
+  trait    String
+  Question Question[]
 
   @@map("courses")
 }

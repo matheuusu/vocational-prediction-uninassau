@@ -10,14 +10,14 @@ const createAnswerSchema = z.object({
 })
 
 // define the expected number of responses
-const answersExpected = 12
+const answersExpected = 15
 
 class CreateAnswerController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     const { answerArray } = request.body as { answerArray: any[] }
 
     if (answerArray.length !== answersExpected) {
-      reply.status(400).send({ message: "há um problema nas questões" })
+      return reply.status(400).send({ message: "há um problema nas questões" })
     }
 
     const { execute: answerServiceExecute } = new CreateAnswerService()
@@ -30,7 +30,7 @@ class CreateAnswerController {
         // calling the service to create the answers
         await answerServiceExecute({ user, value, questionId })
       } catch (error) {
-        reply.status(400).send({ message: "Error processing responses" })
+        return reply.status(400).send({ message: "Error processing responses" })
       }
     }
 
