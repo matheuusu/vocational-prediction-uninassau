@@ -2,9 +2,18 @@ import prisma from "../../utils/prisma"
 
 class ListAnswersService {
   async execute() {
+    const latestUser = await prisma.answer.findFirst({
+      select: {
+        user: true,
+      },
+      orderBy: {
+        id: "desc",
+      },
+    })
+
     const answers = await prisma.answer.findMany({
       where: {
-        user: "Matheus Silva",
+        user: latestUser?.user,
       },
       include: {
         question: true,
