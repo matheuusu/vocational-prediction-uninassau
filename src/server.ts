@@ -5,7 +5,7 @@ import {
 } from "fastify-type-provider-zod"
 
 import cors from "@fastify/cors"
-import { routes } from "./routes"
+import { routes } from "./routes/routes"
 
 const app = fastify({ logger: true })
 

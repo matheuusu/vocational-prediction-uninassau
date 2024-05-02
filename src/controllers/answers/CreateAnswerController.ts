@@ -1,36 +1,35 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { CreateAnswerService } from "../../services/answers/CreateAnswerService"
-import { z } from "zod"
+import { CustomError } from "../../utils/errors/CustomError"
 
-// define the response validation scheme
-const createAnswerSchema = z.object({
-  user: z.string(),
-  value: z.number(),
-  questionId: z.string(),
-})
-
-// define the expected number of responses
+// Define the expected number of responses
 const answersExpected = 15
 
 class CreateAnswerController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { answerArray } = request.body as { answerArray: any[] }
+    const { answerArray } = request.body as {
+      answerArray: { value: number; questionId: string }[]
+    }
 
+    const { user } = request.query as { user: string }
+
+    // Checks whether the number of responses is as expected
     if (answerArray.length !== answersExpected) {
-      return reply.status(400).send({ message: "há um problema nas questões" })
+      throw new CustomError(400, "incorrect number of responses received")
     }
 
     const { execute: answerServiceExecute } = new CreateAnswerService()
 
+    // Scroll through responses for validation and creation
     for (const answer of answerArray) {
       try {
-        // validates each response using schema
-        const { value, user, questionId } = createAnswerSchema.parse(answer)
+        // Validates each response using schema
+        const { value, questionId } = answer
 
-        // calling the service to create the answers
+        // Calling the service to create the answers
         await answerServiceExecute({ user, value, questionId })
       } catch (error) {
-        return reply.status(400).send({ message: "Error processing responses" })
+        throw new CustomError(400, "error processing responses")
       }
     }
 

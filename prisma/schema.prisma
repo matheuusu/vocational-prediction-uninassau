@@ -17,8 +17,8 @@ model Question {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   text     String
   trait    String
-  course   Course?  @relation(fields: [courseId], references: [id])
   Answer   Answer[]
+  course   Course?  @relation(fields: [courseId], references: [id])
   courseId String?  @db.ObjectId
 
   @@map("questions")

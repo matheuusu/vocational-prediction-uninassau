@@ -5,11 +5,13 @@ import {
   FastifyReply,
 } from "fastify"
 
-import { ListQuestionsController } from "./controllers/questions/ListQuestionsController"
-import { CreateQuestionController } from "./controllers/questions/CreateQuestionController"
-import { CreateAnswerController } from "./controllers/answers/CreateAnswerController"
-import { ListAnswersController } from "./controllers/answers/ListAnswersController"
-import { AnswerDetailsController } from "./controllers/answers/AnswerDetailsController"
+import { ZodTypeProvider } from "fastify-type-provider-zod"
+
+import { ListQuestionsController } from "../controllers/questions/ListQuestionsController"
+import { CreateQuestionController } from "../controllers/questions/CreateQuestionController"
+import { ListAnswersController } from "../controllers/answers/ListAnswersController"
+import { AnswerDetailsController } from "../controllers/answers/AnswerDetailsController"
+import { registerAnswer } from "./register-answer"
 
 export async function routes(
   fastify: FastifyInstance,
@@ -36,12 +38,7 @@ export async function routes(
     }
   )
 
-  fastify.post(
-    "/answer",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return new CreateAnswerController().handle(request, reply)
-    }
-  )
+  fastify.register(registerAnswer)
 
   fastify.get(
     "/answer-detail",
