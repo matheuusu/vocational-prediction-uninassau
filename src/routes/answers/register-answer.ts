@@ -12,7 +12,7 @@ export async function registerAnswer(fastify: FastifyInstance) {
         body: z.object({
           answerArray: z.array(
             z.object({
-              value: z.number().int().positive().min(0).max(4),
+              value: z.number().int().max(4),
               questionId: z.string(),
             })
           ),
