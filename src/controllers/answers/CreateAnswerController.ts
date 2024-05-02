@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { CreateAnswerService } from "../../services/answers/CreateAnswerService"
 import { CustomError } from "../../utils/errors/CustomError"
+import { AnswerDetailController } from "./AnswerDetailController"
 
 // Define the expected number of responses
 const answersExpected = 15
@@ -33,7 +34,15 @@ class CreateAnswerController {
       }
     }
 
-    return reply.status(201).send({ message: "Replies have been sent" })
+    // Call the AnswerDetailController and get the response
+    const answerDetailController = new AnswerDetailController()
+    const answerDetailResponse = await answerDetailController.handle(
+      request,
+      reply
+    )
+
+    // Return the response from AnswerDetailController in the reply
+    return reply.status(201).send(answerDetailResponse)
   }
 }
 

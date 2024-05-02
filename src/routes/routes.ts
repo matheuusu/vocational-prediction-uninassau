@@ -1,49 +1,21 @@
-import {
-  FastifyInstance,
-  FastifyPluginOptions,
-  FastifyRequest,
-  FastifyReply,
-} from "fastify"
+import { FastifyInstance, FastifyPluginOptions } from "fastify"
 
-import { ZodTypeProvider } from "fastify-type-provider-zod"
-
-import { ListQuestionsController } from "../controllers/questions/ListQuestionsController"
-import { CreateQuestionController } from "../controllers/questions/CreateQuestionController"
-import { ListAnswersController } from "../controllers/answers/ListAnswersController"
-import { AnswerDetailsController } from "../controllers/answers/AnswerDetailsController"
-import { registerAnswer } from "./register-answer"
+import { registerAnswer } from "./answers/register-answer"
+import { listAnswers } from "./answers/list-answers"
+import { answerDetail } from "./answers/answer-detail"
+import { listQuestions } from "./questions/list-questions"
+import { createQuestion } from "./questions/create-question"
 
 export async function routes(
   fastify: FastifyInstance,
   options: FastifyPluginOptions
 ) {
-  fastify.get(
-    "/questions",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return new ListQuestionsController().handle(request, reply)
-    }
-  )
+  // Questions routes
+  fastify.register(listQuestions)
+  fastify.register(createQuestion)
 
-  fastify.post(
-    "/question",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return new CreateQuestionController().handle(request, reply)
-    }
-  )
-
-  fastify.get(
-    "/answers",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return new ListAnswersController().handle(request, reply)
-    }
-  )
-
+  // Answers routes
+  fastify.register(listAnswers)
   fastify.register(registerAnswer)
-
-  fastify.get(
-    "/answer-detail",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return new AnswerDetailsController().handle(request, reply)
-    }
-  )
+  fastify.register(answerDetail)
 }

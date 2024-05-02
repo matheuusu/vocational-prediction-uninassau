@@ -1,20 +1,23 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { CreateQuestionService } from "../../services/questions/CreateQuestionService"
-import { z } from "zod"
+import { CustomError } from "../../utils/errors/CustomError"
 
 class CreateQuestionController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const createQuestionSchema = z.object({
-      text: z.string(),
-      trait: z.string(),
-    })
+    try {
+      const { text, trait, courseId } = request.body as {
+        text: string
+        trait: string
+        courseId: string
+      }
 
-    const { text, trait } = createQuestionSchema.parse(request.body)
+      const { execute: createQuestionExecute } = new CreateQuestionService()
+      const question = await createQuestionExecute({ text, trait, courseId })
 
-    const createQuestionService = new CreateQuestionService()
-    const question = await createQuestionService.execute({ text, trait })
-
-    return reply.status(201).send(question)
+      return reply.status(201).send({ questionId: question.id })
+    } catch (error) {
+      throw new CustomError(500, "Internal server error")
+    }
   }
 }
 

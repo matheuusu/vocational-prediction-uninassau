@@ -2,7 +2,7 @@ import { z } from "zod"
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify"
 import { ZodTypeProvider } from "fastify-type-provider-zod"
 
-import { CreateAnswerController } from "../controllers/answers/CreateAnswerController"
+import { CreateAnswerController } from "../../controllers/answers/CreateAnswerController"
 
 export async function registerAnswer(fastify: FastifyInstance) {
   fastify.withTypeProvider<ZodTypeProvider>().post(
@@ -12,7 +12,7 @@ export async function registerAnswer(fastify: FastifyInstance) {
         body: z.object({
           answerArray: z.array(
             z.object({
-              value: z.number().int().positive(),
+              value: z.number().int().positive().min(1).max(5),
               questionId: z.string(),
             })
           ),
@@ -27,7 +27,7 @@ export async function registerAnswer(fastify: FastifyInstance) {
         },
       },
     },
-    (request: FastifyRequest, reply: FastifyReply) => {
+    async (request: FastifyRequest, reply: FastifyReply) => {
       return new CreateAnswerController().handle(request, reply)
     }
   )

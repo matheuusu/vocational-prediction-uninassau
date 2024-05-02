@@ -2,7 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify"
 import { AnswerDetailsService } from "../../services/answers/AnswerDetailsService"
 import { SelectAnswerService } from "../../services/answers/SelectAnswerService"
 
-class AnswerDetailsController {
+class AnswerDetailController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {
       const { execute: detailsServiceExecute } = new AnswerDetailsService()
@@ -48,4 +48,4 @@ class AnswerDetailsController {
   }
 }
 
-export { AnswerDetailsController }
+export { AnswerDetailController }
