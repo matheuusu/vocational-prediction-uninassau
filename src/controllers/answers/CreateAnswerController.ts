@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify"
 import { CreateAnswerService } from "../../services/answers/CreateAnswerService"
 import { CustomError } from "../../utils/errors/CustomError"
 import { AnswerDetailController } from "./AnswerDetailController"
+import { FindQuestionService } from "../../services/questions/FindQuestionService"
 
 // Define the expected number of responses
 const answersExpected = 15
@@ -20,12 +21,22 @@ class CreateAnswerController {
     }
 
     const { execute: answerServiceExecute } = new CreateAnswerService()
+    const { execute: findQuestionExecute } = new FindQuestionService()
 
     // Scroll through responses for validation and creation
     for (const answer of answerArray) {
       try {
         // Validates each response using schema
         const { value, questionId } = answer
+
+        const question = findQuestionExecute({ questionId })
+
+        if (!question) {
+          throw new CustomError(
+            400,
+            "Question with the provided ID does not exist"
+          )
+        }
 
         // Calling the service to create the answers
         await answerServiceExecute({ user, value, questionId })
