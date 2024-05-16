@@ -17,7 +17,7 @@ model Question {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   text     String
   trait    String
-  Answer   Answer[]
+  answer   Answer[]
   course   Course?  @relation(fields: [courseId], references: [id])
   courseId String?  @db.ObjectId
 
@@ -38,7 +38,7 @@ model Course {
   id       String     @id @default(auto()) @map("_id") @db.ObjectId
   text     String
   trait    String
-  Question Question[]
+  question Question[]
 
   @@map("courses")
 }

@@ -6,11 +6,13 @@ import {
 
 import cors from "@fastify/cors"
 import { routes } from "./routes/routes"
+import { errorHandler } from "./utils/errors/error-handler"
 
-const app = fastify({ logger: true })
+const app = fastify()
 
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
+app.setErrorHandler(errorHandler)
 
 const start = async () => {
   app.register(cors)
@@ -23,7 +25,7 @@ const start = async () => {
         port: process.env.PORT ? Number(process.env.PORT) : 3333,
       })
       .then(() => {
-        console.log("server is running")
+        console.log(`Server is running`)
       })
   } catch (error) {
     process.exit(1)
