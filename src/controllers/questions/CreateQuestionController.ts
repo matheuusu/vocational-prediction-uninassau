@@ -1,22 +1,18 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { CreateQuestionService } from "../../services/questions/CreateQuestionService"
-import { CustomError } from "../../utils/errors/CustomError"
+import { BadRequest } from "../../utils/errors/bad-request"
 
 class CreateQuestionController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const { text, trait, courseId } = request.body as {
-        text: string
-        trait: string
-        courseId: string
-      }
+      const { text } = request.body as { text: string }
 
       const { execute: createQuestionExecute } = new CreateQuestionService()
-      const question = await createQuestionExecute({ text, trait, courseId })
+      const question = await createQuestionExecute({ text })
 
       return reply.status(201).send({ questionId: question.id })
     } catch (error) {
-      throw new CustomError(500, "Internal server error")
+      throw new BadRequest("Internal server error")
     }
   }
 }

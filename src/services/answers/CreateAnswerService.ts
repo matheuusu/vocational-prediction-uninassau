@@ -2,21 +2,21 @@ import prisma from "../../lib/prisma"
 
 interface CreateAnswerProps {
   value: number
-  user: string
+  userId: string
   questionId: string
 }
 
 class CreateAnswerService {
-  async execute({ value, user, questionId }: CreateAnswerProps) {
+  async execute({ value, userId, questionId }: CreateAnswerProps) {
     const answer = await prisma.answer.create({
       data: {
         value,
-        user,
+        userId,
         questionId,
       },
     })
 
-    return answer.id
+    return answer
   }
 }
 

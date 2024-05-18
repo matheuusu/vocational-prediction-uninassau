@@ -4,9 +4,16 @@ import { ListQuestionsService } from "../../services/questions/ListQuestionsServ
 class ListQuestionsController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     const listQuestionsService = new ListQuestionsService()
-    const listQuestions = await listQuestionsService.execute()
+    const questions = await listQuestionsService.execute()
 
-    return reply.send(listQuestions)
+    return reply.send({
+      questions: questions.map((question) => {
+        return {
+          id: question.id,
+          text: question.text,
+        }
+      }),
+    })
   }
 }
 

@@ -5,6 +5,8 @@ import { listAnswers } from "./answers/list-answers"
 import { answerDetail } from "./answers/answer-detail"
 import { listQuestions } from "./questions/list-questions"
 import { createQuestion } from "./questions/create-question"
+import { createUser } from "./users/create-user"
+import { updateUser } from "./users/update-user"
 
 export async function routes(
   fastify: FastifyInstance,
@@ -18,4 +20,8 @@ export async function routes(
   fastify.register(listAnswers)
   fastify.register(registerAnswer)
   fastify.register(answerDetail)
+
+  // Users routes
+  fastify.register(createUser)
+  fastify.register(updateUser)
 }

@@ -1,30 +1,30 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { CreateAnswerService } from "../../services/answers/CreateAnswerService"
-import { CustomError } from "../../utils/errors/CustomError"
+import { BadRequest } from "../../utils/errors/bad-request"
 import { AnswerDetailController } from "./AnswerDetailController"
 import { FindQuestionService } from "../../services/questions/FindQuestionService"
 
 // Define the expected number of responses
-const answersExpected = 15
+const answersExpected = 10
 
 class CreateAnswerController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { answerArray } = request.body as {
-      answerArray: { value: number; questionId: string }[]
+    const { answers } = request.body as {
+      answers: { value: number; questionId: string }[]
     }
 
     const { user } = request.query as { user: string }
 
     // Checks whether the number of responses is as expected
-    if (answerArray.length !== answersExpected) {
-      throw new CustomError(400, "incorrect number of responses received")
+    if (answers.length !== answersExpected) {
+      throw new BadRequest("Incorrect number of responses received")
     }
 
     const { execute: answerServiceExecute } = new CreateAnswerService()
     const { execute: findQuestionExecute } = new FindQuestionService()
 
     // Scroll through responses for validation and creation
-    for (const answer of answerArray) {
+    for (const answer of answers) {
       try {
         // Validates each response using schema
         const { value, questionId } = answer
@@ -32,16 +32,13 @@ class CreateAnswerController {
         const question = findQuestionExecute({ questionId })
 
         if (!question) {
-          throw new CustomError(
-            400,
-            "Question with the provided ID does not exist"
-          )
+          throw new BadRequest("Question with the provided ID does not exist")
         }
 
         // Calling the service to create the answers
         await answerServiceExecute({ user, value, questionId })
       } catch (error) {
-        throw new CustomError(400, "error processing responses")
+        throw new BadRequest("Error processing responses")
       }
     }
 
