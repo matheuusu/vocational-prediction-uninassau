@@ -4,6 +4,12 @@ import { ListAnswersController } from "../../controllers/answers/ListAnswersCont
 export async function listAnswers(fastify: FastifyInstance) {
   fastify.get(
     "/answers",
+    {
+      schema: {
+        summary: "Get all answers",
+        tags: ["answers"],
+      },
+    },
     async (request: FastifyRequest, reply: FastifyReply) => {
       return new ListAnswersController().handle(request, reply)
     }

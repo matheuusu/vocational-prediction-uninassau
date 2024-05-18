@@ -7,6 +7,7 @@ import { listQuestions } from "./questions/list-questions"
 import { createQuestion } from "./questions/create-question"
 import { createUser } from "./users/create-user"
 import { updateUser } from "./users/update-user"
+import { createCourseWeight } from "./courses/create-course-weight"
 
 export async function routes(
   fastify: FastifyInstance,
@@ -24,4 +25,7 @@ export async function routes(
   // Users routes
   fastify.register(createUser)
   fastify.register(updateUser)
+
+  // Courses routes
+  fastify.register(createCourseWeight)
 }
