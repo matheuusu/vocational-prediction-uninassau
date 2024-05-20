@@ -4,29 +4,39 @@ import { CreateCourseWeightService } from "../../services/courses/CreateCourseWe
 
 class CreateCourseWeightController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { value, courseId, questionId } = request.body as {
-      value: number
-      courseId: string
-      questionId: string
+    const { weights } = request.body as {
+      weights: { value: number; courseId: string; questionId: string }[]
     }
 
-    const { execute: CreateCourseWeight } = new CreateCourseWeightService()
+    const createCourseWeightService = new CreateCourseWeightService()
 
-    try {
-      const courseWeight = await CreateCourseWeight({
-        value,
-        courseId,
-        questionId,
-      })
+    const createdWeights = []
 
-      return reply.status(201).send({ weightId: courseWeight.id })
-    } catch (error) {
-      if (error instanceof BadRequest) {
-        return reply.status(400).send({ error: error.message })
+    for (const weight of weights) {
+      try {
+        const { value, courseId, questionId } = weight
+
+        const courseWeight = await createCourseWeightService.execute({
+          value,
+          courseId,
+          questionId,
+        })
+
+        createdWeights.push({ weightId: courseWeight.courseId })
+      } catch (error) {
+        if (error instanceof BadRequest) {
+          return reply.status(400).send({ error: error.message })
+        }
+
+        return reply
+          .status(500)
+          .send({ error: "failure during weight creation" })
       }
 
-      return reply.status(500).send({ error: "failure during weight creation" })
+      console.log(createdWeights)
     }
+
+    return reply.status(201).send({ createdWeights })
   }
 }
 

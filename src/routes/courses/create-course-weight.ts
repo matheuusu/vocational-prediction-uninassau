@@ -6,19 +6,27 @@ import { CreateCourseWeightController } from "../../controllers/courses/CreateCo
 
 export async function createCourseWeight(fastify: FastifyInstance) {
   fastify.withTypeProvider<ZodTypeProvider>().post(
-    "/course/weight/register",
+    "/course/weight",
     {
       schema: {
         summary: "Create a course weight for a question",
         tags: ["courses", "questions"],
         body: z.object({
-          value: z.number().positive(),
-          courseId: z.string(),
-          questionId: z.string(),
+          weights: z.array(
+            z.object({
+              value: z.number().positive(),
+              courseId: z.string(),
+              questionId: z.string(),
+            })
+          ),
         }),
         response: {
           201: z.object({
-            weightId: z.string(),
+            createdWeights: z.array(
+              z.object({
+                weightId: z.string(),
+              })
+            ),
           }),
         },
       },
