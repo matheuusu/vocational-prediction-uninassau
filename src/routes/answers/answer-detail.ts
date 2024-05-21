@@ -1,17 +1,33 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify"
-import { AnswerDetailController } from "../../controllers/answers/AnswerDetailController"
+import { AnswerDetailsController } from "../../controllers/answers/AnswerDetailController"
+import { ZodTypeProvider } from "fastify-type-provider-zod"
+import { z } from "zod"
 
 export async function answerDetail(fastify: FastifyInstance) {
-  fastify.get(
+  fastify.withTypeProvider<ZodTypeProvider>().get(
     "/answer-detail",
     {
       schema: {
-        summary: "Receive details of responses",
+        summary: "Receive details of a user answer",
         tags: ["answers"],
+        querystring: z.object({
+          userId: z.string(),
+        }),
+        response: {
+          201: z.object({
+            courseScores: z.array(
+              z.object({
+                id: z.string(),
+                course: z.string(),
+                score: z.number().positive(),
+              })
+            ),
+          }),
+        },
       },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      return new AnswerDetailController().handle(request, reply)
+      return new AnswerDetailsController().handle(request, reply)
     }
   )
 }

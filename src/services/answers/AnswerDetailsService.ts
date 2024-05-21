@@ -1,14 +1,26 @@
 import prisma from "../../lib/prisma"
 
 interface AnswerDetailsProps {
-  trait?: string
+  userId: string
 }
 
 class AnswerDetailsService {
-  async execute({ trait }: AnswerDetailsProps) {
+  async execute({ userId }: AnswerDetailsProps) {
     const courses = await prisma.course.findMany({
-      where: {
-        trait,
+      include: {
+        courseWeight: {
+          include: {
+            question: {
+              include: {
+                answer: {
+                  where: {
+                    userId,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     })
 

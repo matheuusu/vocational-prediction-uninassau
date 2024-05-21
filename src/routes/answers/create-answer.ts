@@ -4,25 +4,31 @@ import { ZodTypeProvider } from "fastify-type-provider-zod"
 
 import { CreateAnswerController } from "../../controllers/answers/CreateAnswerController"
 
-export async function registerAnswer(fastify: FastifyInstance) {
+export async function createAnswer(fastify: FastifyInstance) {
   fastify.withTypeProvider<ZodTypeProvider>().post(
-    "/answer",
+    "/answers",
     {
       schema: {
+        summary: "Register answers and receive scores",
+        tags: ["answers"],
         body: z.object({
-          answerArray: z.array(
+          userName: z.string(),
+          answers: z.array(
             z.object({
               value: z.number().int().max(4),
               questionId: z.string(),
             })
           ),
         }),
-        querystring: z.object({
-          user: z.string().min(3),
-        }),
         response: {
           201: z.object({
-            message: z.string(),
+            courseScores: z.array(
+              z.object({
+                id: z.string(),
+                course: z.string(),
+                score: z.number().positive(),
+              })
+            ),
           }),
         },
       },
