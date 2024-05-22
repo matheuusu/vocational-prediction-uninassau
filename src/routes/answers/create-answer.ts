@@ -13,6 +13,8 @@ export async function createAnswer(fastify: FastifyInstance) {
         tags: ["answers"],
         body: z.object({
           userName: z.string(),
+          email: z.string().email(),
+          phone: z.string(),
           answers: z.array(
             z.object({
               value: z.number().int().max(4),

@@ -12,7 +12,7 @@ export async function updateUser(fastify: FastifyInstance) {
         summary: "Update a user info",
         tags: ["users"],
         body: z.object({
-          name: z.string().min(3).nullable(),
+          userName: z.string().min(3).nullable(),
           email: z.string().email().nullable(),
           phone: z.string().nullable(),
         }),

@@ -7,7 +7,7 @@ interface UpdateUserProps {
 }
 
 interface UpdateUserDataProps {
-  name?: string
+  userName?: string
   email?: string
   phone?: string
 }
@@ -27,7 +27,7 @@ class UpdateUserService {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
-        name: data.name ?? user.name,
+        name: data.userName ?? user.name,
         email: data.email ?? user.email,
         phone: data.phone ?? user.phone,
       },

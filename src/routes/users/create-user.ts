@@ -12,7 +12,7 @@ export async function createUser(fastify: FastifyInstance) {
         summary: "Create a user",
         tags: ["users"],
         body: z.object({
-          name: z.string().min(3),
+          userName: z.string().min(3),
           email: z.string().email().nullable(),
           phone: z.string().nullable(),
         }),

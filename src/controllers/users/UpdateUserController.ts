@@ -5,8 +5,8 @@ import { BadRequest } from "../../utils/errors/bad-request"
 class UpdateUserController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     const { userId } = request.params as { userId: string }
-    const { name, email, phone } = request.body as {
-      name?: string
+    const { userName, email, phone } = request.body as {
+      userName?: string
       email?: string
       phone?: string
     }
@@ -16,7 +16,7 @@ class UpdateUserController {
     try {
       const updatedUser = await updateUserService({
         userId,
-        data: { name, email, phone },
+        data: { userName, email, phone },
       })
 
       return reply.status(200).send({

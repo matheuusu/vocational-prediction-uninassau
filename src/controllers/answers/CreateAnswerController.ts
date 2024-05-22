@@ -4,14 +4,17 @@ import { BadRequest } from "../../utils/errors/bad-request"
 import { FindQuestionService } from "../../services/questions/FindQuestionService"
 import { CreateUserService } from "../../services/users/CreateUserService"
 import { DetailScore } from "../../utils/courseScore"
+import { UpdateUserService } from "../../services/users/UpdateUserService"
 
 // Define the expected number of responses
 const answersExpected = 10
 
 class CreateAnswerController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { userName, answers } = request.body as {
+    const { userName, email, phone, answers } = request.body as {
       userName: string
+      email: string
+      phone: string
       answers: { value: number; questionId: string }[]
     }
 
@@ -45,6 +48,12 @@ class CreateAnswerController {
         throw new BadRequest("Error processing responses")
       }
     }
+
+    const { execute: updateUserService } = new UpdateUserService()
+    await updateUserService({
+      userId: user.id,
+      data: { userName, email, phone },
+    })
 
     // Call the DetailScore and get the response
     const { handle: detailScore } = new DetailScore()
