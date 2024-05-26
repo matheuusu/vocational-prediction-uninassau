@@ -4,7 +4,7 @@
 
 Este projeto é um teste vocacional desenvolvido para ajudar futuros alunos a identificarem os cursos oferecidos pela UNINASSAU que mais se alinham com seus interesses, habilidades e aspirações profissionais. O objetivo é proporcionar uma ferramenta acessível e eficiente que auxilie na escolha do curso ideal, facilitando o processo de decisão acadêmica.
 
-### ⚙️ Pré-requisitos
+### ⚙️ Instalação
 
 Primeiro clone o projeto em seu computador e entre no diretório criado:
 
