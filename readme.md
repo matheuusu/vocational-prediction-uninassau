@@ -1,5 +1,3 @@
-![Logo do projeto](https://i.imgur.com/kniMQHu.png)
-
 # Vocational UNINASSAU
 
 ## 🔥 Introdução
