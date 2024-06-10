@@ -14,6 +14,7 @@ class UpdateUserController {
     // Calling update user service
     const { execute: updateUserService } = new UpdateUserService()
 
+    // Update the user if it exists
     try {
       const updatedUser = await updateUserService({
         userId,
