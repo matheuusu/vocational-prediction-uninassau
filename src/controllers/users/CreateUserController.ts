@@ -8,6 +8,7 @@ class CreateUserController {
         userName: string
       }
 
+      // Calling create user service
       const { execute: createUserService } = new CreateUserService()
       const user = await createUserService({ userName })
 
