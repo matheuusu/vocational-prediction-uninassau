@@ -11,6 +11,7 @@ class UpdateUserController {
       phone?: string
     }
 
+    // Calling update user service
     const { execute: updateUserService } = new UpdateUserService()
 
     try {
